@@ -52,11 +52,11 @@ public class NewsAdBlocksInserter extends AbstractInserter {
 
                 if (c.trim().toLowerCase().startsWith(newsAdBlockMark)) {
                     outSchedule.add(new Comment("--- " + c, true));
-                    outSchedule.addAll(adBlockDecor.getStartBlockCommandsWithoutAdMark());
+                    outSchedule.addAll(adBlockDecor.getStartNewsBlockCommands());
                     if (newsAdBlockMovies != null && !newsAdBlockMovies.isEmpty()) {
                         newsAdBlockMovies.forEach(adMovie -> outSchedule.add(new Movie(null, null, null, adMovie)));
                     }
-                    outSchedule.addAll(adBlockDecor.getEndBlockCommandsWithoutAdMark());
+                    outSchedule.addAll(adBlockDecor.getEndNewsBlockCommands());
                     outSchedule.add(new Comment("", true));
                 } else {
                     outSchedule.add(command);

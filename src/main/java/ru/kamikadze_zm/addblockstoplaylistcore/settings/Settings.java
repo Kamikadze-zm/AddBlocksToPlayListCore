@@ -34,6 +34,7 @@ public class Settings {
     public final boolean onSecondTrailer;
     public final boolean onAdBlocksCrawlLineCounter;
     public final boolean onNewsAdBlock;
+    public final boolean onDifferentAdOpeners;
 
     /**
      *
@@ -58,6 +59,7 @@ public class Settings {
             onAllDayAnnouncements = getBoolProperty(properties, SettingsKeys.ON_ALL_DAY_ANNOUNCEMENTS);
             onPopUpAd = getBoolProperty(properties, SettingsKeys.ON_POP_UP_AD);
             onAdBlocksCrawlLineCounter = getBoolProperty(properties, SettingsKeys.ON_AD_BLOCKS_CRAWLLINE_COUNTER);
+            onDifferentAdOpeners = getBoolProperty(properties, SettingsKeys.ON_DIFFERENT_AD_OPENERS);
         } else {
             onAdMarks = false;
             onAdBlockCrawlLine = false;
@@ -65,6 +67,7 @@ public class Settings {
             onAllDayAnnouncements = false;
             onPopUpAd = false;
             onAdBlocksCrawlLineCounter = false;
+            onDifferentAdOpeners = false;
         }
 
         onAnnouncerNow = getBoolProperty(properties, SettingsKeys.ON_ANNOUNCER_NOW);
@@ -155,7 +158,11 @@ public class Settings {
     }
 
     private void loadDecorAdBlockSettings(Properties p) throws SettingsException {
-        settings.put(SettingsKeys.AD_OPENER, getProperty(p, SettingsKeys.AD_OPENER));
+        settings.put(SettingsKeys.AD_OPENER_OTHER_BLOCK, getProperty(p, SettingsKeys.AD_OPENER_OTHER_BLOCK));
+        if (onDifferentAdOpeners) {
+            settings.put(SettingsKeys.AD_OPENER_15BLOCK, getProperty(p, SettingsKeys.AD_OPENER_15BLOCK));
+            settings.put(SettingsKeys.AD_OPENER_45BLOCK, getProperty(p, SettingsKeys.AD_OPENER_45BLOCK));
+        }
         settings.put(SettingsKeys.AD_CLOSER, getProperty(p, SettingsKeys.AD_CLOSER));
         settings.put(SettingsKeys.LOGO_NAME, getProperty(p, SettingsKeys.LOGO_NAME));
         settings.put(SettingsKeys.CLOCK_NAME, getProperty(p, SettingsKeys.CLOCK_NAME));
@@ -269,13 +276,25 @@ public class Settings {
          */
         ON_NEWS_AD_BLOCK("on-news-ad-block"),
         /**
+         * Включить разные рекламные открывашки для разных блоков. true - включить, false - нет
+         */
+        ON_DIFFERENT_AD_OPENERS("on-different-ad-openers"),
+        /**
          * Путь к папке с рекламными роликами
          */
         AD_PATH("ad-path"),
         /**
-         * Путь к файлу рекламной открывашки
+         * Путь к файлу рекламной открывашки для 15 минутного блока
          */
-        AD_OPENER("ad-opener"),
+        AD_OPENER_15BLOCK("ad-opener-15block"),
+        /**
+         * Путь к файлу рекламной открывашки для 45 минутного блока
+         */
+        AD_OPENER_45BLOCK("ad-opener-45block"),
+        /**
+         * Путь к файлу рекламной открывашки для остальных блоков (если разные открывашки выключены, будет использоваться эта на все блоки)
+         */
+        AD_OPENER_OTHER_BLOCK("ad-opener-other-block"),
         /**
          * Путь к файлу рекламной закрывашки
          */

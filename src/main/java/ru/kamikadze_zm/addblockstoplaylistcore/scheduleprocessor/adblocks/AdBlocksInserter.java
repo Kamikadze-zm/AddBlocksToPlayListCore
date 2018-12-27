@@ -157,7 +157,7 @@ public class AdBlocksInserter extends AbstractInserter {
 
         outSchedule.addAll(adBlockDecor.getStartBlockCommands(block.getTime().getMinutes()));
         block.getMovies().forEach(adMovie -> outSchedule.add(new Movie(null, null, null, adMovie)));
-        outSchedule.addAll(adBlockDecor.getEndBlockCommands());
+        outSchedule.addAll(adBlockDecor.getEndBlockCommands(block.getTime().getMinutes()));
     }
 
     /**

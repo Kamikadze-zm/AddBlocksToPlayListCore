@@ -24,11 +24,13 @@ public class AdBlockDecor {
     private final TitleObjOn clockOn;
     private final TitleObjOff clockOff;
 
-    private final boolean onDifferentAdOpeners;
+    private final boolean onDifferentAdOpenersClosers;
     private final Movie adOpener15block;
     private final Movie adOpener45block;
     private final Movie adOpenerOtherBlock;
-    private final Movie adCloser;
+    private final Movie adCloser15block;
+    private final Movie adCloser45block;
+    private final Movie adCloserOtherBlock;
 
     private final boolean onAdMarks;
     private final MarkStart adStartMark;
@@ -45,17 +47,21 @@ public class AdBlockDecor {
         this.clockOn = new TitleObjOn(clockName, logoDuration, logoFade);
         this.clockOff = new TitleObjOff(clockName, logoDuration, logoFade);
 
-        this.onDifferentAdOpeners = settings.onDifferentAdOpeners;
+        this.onDifferentAdOpenersClosers = settings.onDifferentAdOpenersClosers;
         Duration adOpenerCloserDuration = new Duration(0, 0, 4, 0);
-        if (this.onDifferentAdOpeners) {
+        if (this.onDifferentAdOpenersClosers) {
             this.adOpener15block = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_OPENER_15BLOCK));
             this.adOpener45block = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_OPENER_45BLOCK));
+            this.adCloser15block = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_CLOSER_15BLOCK));
+            this.adCloser45block = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_CLOSER_45BLOCK));
         } else {
             this.adOpener15block = null;
             this.adOpener45block = null;
+            this.adCloser15block = null;
+            this.adCloser45block = null;
         }
         this.adOpenerOtherBlock = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_OPENER_OTHER_BLOCK));
-        this.adCloser = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_CLOSER));
+        this.adCloserOtherBlock = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_CLOSER_OTHER_BLOCK));
 
         this.onAdMarks = settings.onAdMarks;
         if (settings.onAdMarks) {
@@ -80,7 +86,7 @@ public class AdBlockDecor {
         if (onAdMarks) {
             startBlockCommands.add(adStartMark);
         }
-        if (onDifferentAdOpeners) {
+        if (onDifferentAdOpenersClosers) {
             switch (minutes) {
                 case 15:
                     startBlockCommands.add(adOpener15block);
@@ -99,12 +105,26 @@ public class AdBlockDecor {
     }
 
     /**
-     *
+     * @param minutes минутная часть времени рекламного блока
      * @return команды рекламной закрывашки, метки конца рекламного блока (если включена), включения логотипа, включения часов
      */
-    public List<Command> getEndBlockCommands() {
+    public List<Command> getEndBlockCommands(int minutes) {
         List<Command> endBlockCommands = new ArrayList<>(4);
-        endBlockCommands.add(adCloser);
+        if (onDifferentAdOpenersClosers) {
+            switch (minutes) {
+                case 15:
+                    endBlockCommands.add(adCloser15block);
+                    break;
+                case 45:
+                    endBlockCommands.add(adCloser45block);
+                    break;
+                default:
+                    endBlockCommands.add(adCloserOtherBlock);
+                    break;
+            }
+        } else {
+            endBlockCommands.add(adCloserOtherBlock);
+        }
         if (onAdMarks) {
             endBlockCommands.add(adEndMark);
         }
@@ -131,7 +151,7 @@ public class AdBlockDecor {
      */
     public List<Command> getEndNewsBlockCommands() {
         List<Command> endNewsBlockCommands = new ArrayList<>(3);
-        endNewsBlockCommands.add(adCloser);
+        endNewsBlockCommands.add(adCloserOtherBlock);
         endNewsBlockCommands.add(logoOn);
         endNewsBlockCommands.add(clockOn);
         return endNewsBlockCommands;

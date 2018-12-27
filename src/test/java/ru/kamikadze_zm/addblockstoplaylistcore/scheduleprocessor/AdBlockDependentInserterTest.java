@@ -39,7 +39,7 @@ public class AdBlockDependentInserterTest {
         properties.put(SettingsKeys.ON_SECOND_TRAILER.getKey(), "false");
         properties.put(SettingsKeys.ON_TOBACCO.getKey(), "false");
         properties.put(SettingsKeys.ON_NEWS_AD_BLOCK.getKey(), "false");
-        properties.put(SettingsKeys.ON_DIFFERENT_AD_OPENERS.getKey(), "false");
+        properties.put(SettingsKeys.ON_DIFFERENT_AD_OPENERS_CLOSERS.getKey(), "false");
         properties.put(SettingsKeys.SCHEDULE_PATH.getKey(), "path");
         properties.put(SettingsKeys.SCHEDULE_DATE_FORMAT.getKey(), "format");
         properties.put(SettingsKeys.AD_SHEET_PATH.getKey(), "path");
@@ -48,7 +48,7 @@ public class AdBlockDependentInserterTest {
         properties.put(SettingsKeys.TRAILERS_PATH.getKey(), "path");
         properties.put(SettingsKeys.FULL_EXCLUSIONS.getKey(), "path");
         properties.put(SettingsKeys.AD_OPENER_OTHER_BLOCK.getKey(), "path");
-        properties.put(SettingsKeys.AD_CLOSER.getKey(), "path");
+        properties.put(SettingsKeys.AD_CLOSER_OTHER_BLOCK.getKey(), "path");
         properties.put(SettingsKeys.LOGO_NAME.getKey(), "name");
         properties.put(SettingsKeys.CLOCK_NAME.getKey(), "name");
         Settings settings;

@@ -1,6 +1,7 @@
 package ru.kamikadze_zm.addblockstoplaylistcore.scheduleprocessor.adblocks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import ru.kamikadze_zm.onair.command.Command;
 import ru.kamikadze_zm.onair.command.MarkStart;
@@ -36,6 +37,10 @@ public class AdBlockDecor {
     private final MarkStart adStartMark;
     private final MarkStop adEndMark;
 
+    private final boolean onNewsAdBlock;
+    private final Movie newsAdBlockOpener;
+    private final Movie newsAdBlockCloser;
+
     public AdBlockDecor(Settings settings) {
 
         String logoName = settings.getParameter(SettingsKeys.LOGO_NAME);
@@ -64,13 +69,22 @@ public class AdBlockDecor {
         this.adCloserOtherBlock = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_CLOSER_OTHER_BLOCK));
 
         this.onAdMarks = settings.onAdMarks;
-        if (settings.onAdMarks) {
+        if (this.onAdMarks) {
             String markName = settings.getParameter(SettingsKeys.AD_MARK_NAME);
             this.adStartMark = new MarkStart(markName, "Начало рекламного блока");
             this.adEndMark = new MarkStop(markName, "Конец рекламного блока");
         } else {
             this.adStartMark = null;
             this.adEndMark = null;
+        }
+
+        this.onNewsAdBlock = settings.onNewsAdBlock;
+        if (this.onNewsAdBlock) {
+            this.newsAdBlockOpener = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.NEWS_AD_BLOCK_OPENER));
+            this.newsAdBlockCloser = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.NEWS_AD_BLOCK_CLOSER));
+        } else {
+            this.newsAdBlockOpener = null;
+            this.newsAdBlockCloser = null;
         }
     }
 
@@ -138,10 +152,13 @@ public class AdBlockDecor {
      * @return команды выключения часов, выключения логотипа, рекламной открывашки (без метки начала рекламного блока, даже если включена)
      */
     public List<Command> getStartNewsBlockCommands() {
+        if (!this.onNewsAdBlock) {
+            return Collections.emptyList();
+        }
         List<Command> startNewsBlockCommands = new ArrayList<>(3);
         startNewsBlockCommands.add(clockOff);
         startNewsBlockCommands.add(logoOff);
-        startNewsBlockCommands.add(adOpenerOtherBlock);
+        startNewsBlockCommands.add(newsAdBlockOpener);
         return startNewsBlockCommands;
     }
 
@@ -150,8 +167,11 @@ public class AdBlockDecor {
      * @return команды рекламной закрывашки, включения логотипа, включения часов (без метки конца рекламного блока, даже если включена)
      */
     public List<Command> getEndNewsBlockCommands() {
+        if (!this.onNewsAdBlock) {
+            return Collections.emptyList();
+        }
         List<Command> endNewsBlockCommands = new ArrayList<>(3);
-        endNewsBlockCommands.add(adCloserOtherBlock);
+        endNewsBlockCommands.add(newsAdBlockCloser);
         endNewsBlockCommands.add(logoOn);
         endNewsBlockCommands.add(clockOn);
         return endNewsBlockCommands;

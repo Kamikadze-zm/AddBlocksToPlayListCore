@@ -155,6 +155,8 @@ public class Settings {
     private void loadNewsAdSettings(Properties p) throws SettingsException {
         settings.put(SettingsKeys.NEWS_AD_BLOCK_COMMENT, getProperty(p, SettingsKeys.NEWS_AD_BLOCK_COMMENT));
         settings.put(SettingsKeys.NEWS_AD_BLOCKS_FILE, getProperty(p, SettingsKeys.NEWS_AD_BLOCKS_FILE));
+        settings.put(SettingsKeys.NEWS_AD_BLOCK_OPENER, getProperty(p, SettingsKeys.NEWS_AD_BLOCK_OPENER));
+        settings.put(SettingsKeys.NEWS_AD_BLOCK_CLOSER, getProperty(p, SettingsKeys.NEWS_AD_BLOCK_CLOSER));
     }
 
     private void loadDecorAdBlockSettings(Properties p) throws SettingsException {
@@ -297,7 +299,7 @@ public class Settings {
          * Путь к файлу рекламной открывашки для остальных блоков (если разные открывашки-закрывашки выключены, будет использоваться эта на все блоки)
          */
         AD_OPENER_OTHER_BLOCK("ad-opener-other-block"),
-         /**
+        /**
          * Путь к файлу рекламной закрывашки для 15 минутного блока
          */
         AD_CLOSER_15BLOCK("ad-closer-15block"),
@@ -428,7 +430,15 @@ public class Settings {
         /**
          * Путь к файлу с названиями роликов для новостного рекламного блока
          */
-        NEWS_AD_BLOCKS_FILE("news-ad-block-file");
+        NEWS_AD_BLOCKS_FILE("news-ad-block-file"),
+        /**
+         * Путь к файлу новостной рекламной открывашки
+         */
+        NEWS_AD_BLOCK_OPENER("news-ad-block-opener"),
+        /**
+         * Путь к файлу новостной рекламной закрывашки
+         */
+        NEWS_AD_BLOCK_CLOSER("news-ad-block-closer");
 
         private final String key;
 

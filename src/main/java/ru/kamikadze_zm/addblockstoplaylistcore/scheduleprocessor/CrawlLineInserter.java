@@ -34,8 +34,8 @@ public class CrawlLineInserter extends AdBlockDependentInserter {
             throw new IllegalArgumentException(message);
         }
 
-        if (!settings.onCrawlLine) {
-            String message = "CrawlLineInserter cannot be used, when setting onCrawlLine is not true";
+        if (!settings.getBoolParameter(SettingsKeys.ON_CRAWL_LINE)) {
+            String message = "CrawlLineInserter cannot be used, when setting " + SettingsKeys.ON_CRAWL_LINE.getKey() + " is not true";
             LOG.error(message);
             throw new IllegalStateException(message);
         }

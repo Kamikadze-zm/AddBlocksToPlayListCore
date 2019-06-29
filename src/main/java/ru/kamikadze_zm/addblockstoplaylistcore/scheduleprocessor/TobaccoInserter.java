@@ -24,8 +24,8 @@ public class TobaccoInserter extends AdBlockDependentInserter {
     public TobaccoInserter(Settings settings, Parameters parameters) {
         super(settings, parameters);
 
-        if (!settings.onTobacco) {
-            String message = "TobaccoInserter cannot be used, when setting onTobacco is not true";
+        if (!settings.getBoolParameter(SettingsKeys.ON_TOBACCO)) {
+            String message = "TobaccoInserter cannot be used, when setting " + SettingsKeys.ON_TOBACCO.getKey() + " is not true";
             LOG.error(message);
             throw new IllegalStateException(message);
         }
@@ -55,7 +55,7 @@ public class TobaccoInserter extends AdBlockDependentInserter {
                 Movie m = (Movie) c;
 
                 //пропуск меток для строки
-                if (settings.onCrawlLine && m.getFileName().equals(Settings.NO_OTHER_CRAWL_LINE_MARK)) {
+                if (settings.getBoolParameter(SettingsKeys.ON_CRAWL_LINE) && m.getFileName().equals(Settings.NO_OTHER_CRAWL_LINE_MARK)) {
                     outSchedule.add(c);
                     continue;
                 }

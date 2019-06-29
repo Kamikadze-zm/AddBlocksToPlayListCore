@@ -19,7 +19,7 @@ public class AdBlockCrawlLine {
     private int adBlocksCrawlLineCounter = 0;
 
     public AdBlockCrawlLine(Settings settings, Date scheduleDate) {
-        if (settings.onAdBlockCrawlLine) {
+        if (settings.getBoolParameter(SettingsKeys.ON_AD_BLOCK_CRAWL_LINE)) {
             String objectName = settings.getParameter(Settings.SettingsKeys.CRAWL_LINE_NAME);
             ParallelDuration duration = new ParallelDuration(0, 0, 0, 1);
 
@@ -37,7 +37,7 @@ public class AdBlockCrawlLine {
                     settings.getParameter(SettingsKeys.CRAWL_LINE_OTHER_BLOCK_PATH).replace("<>", df.format(scheduleDate)));
 
             this.isCreated = true;
-            if (settings.onAdBlocksCrawlLineCounter) {
+            if (settings.getBoolParameter(SettingsKeys.ON_AD_BLOCKS_CRAWLLINE_COUNTER)) {
                 this.onAdBlocksCrawlLineCounter = true;
             }
         }

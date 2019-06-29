@@ -32,7 +32,7 @@ public class PopUpAd {
     private boolean onCrawlLine = false;
 
     public PopUpAd(Settings settings, int commerceCrawlLineDuration) {
-        if (settings.onPopUpAd) {
+        if (settings.getBoolParameter(SettingsKeys.ON_POP_UP_AD)) {
             this.popUpAdErrors = new ArrayList<>();
             //длительность коммерческой строки + отступ, в милисекундах
             this.commerceCrawlLineDuration = (commerceCrawlLineDuration
@@ -54,7 +54,7 @@ public class PopUpAd {
                 if (Boolean.parseBoolean(settings.getParameter(SettingsKeys.POP_UP_AD_SHUFFLE))) {
                     Collections.shuffle(this.popUpAds);
                 }
-                if (settings.onCrawlLine) {
+                if (settings.getBoolParameter(SettingsKeys.ON_CRAWL_LINE)) {
                     this.onCrawlLine = true;
                 }
             } else {

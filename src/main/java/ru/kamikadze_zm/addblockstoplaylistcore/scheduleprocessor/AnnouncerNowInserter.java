@@ -26,8 +26,8 @@ public class AnnouncerNowInserter extends AbstractInserter {
             throw new IllegalArgumentException(message);
         }
 
-        if (!settings.onAnnouncerNow) {
-            String message = "AnnouncerNowInserter cannot be used, when setting onAnnouncerNow is not true";
+        if (!settings.getBoolParameter(SettingsKeys.ON_ANNOUNCER_NOW)) {
+            String message = "AnnouncerNowInserter cannot be used, when setting " + SettingsKeys.ON_ANNOUNCER_NOW.getKey() + " is not true";
             LOG.error(message);
             throw new IllegalStateException(message);
         }

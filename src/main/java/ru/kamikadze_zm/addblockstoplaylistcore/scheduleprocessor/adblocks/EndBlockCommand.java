@@ -30,7 +30,7 @@ public class EndBlockCommand {
     private final Comment endBlockCommand;
 
     public EndBlockCommand(Settings settings, Parameters parameters) {
-        if (settings.onAnnouncement && !parameters.getAnnouncementName().isEmpty()) {
+        if (settings.getBoolParameter(SettingsKeys.ON_ANNOUNCEMENT) && !parameters.getAnnouncementName().isEmpty()) {
 
             this.announcementMark = settings.getParameter(SettingsKeys.ANNOUNCEMENT_MARK);
 
@@ -38,7 +38,7 @@ public class EndBlockCommand {
             this.announcementStartTime = parameters.getAnnouncementStartTime();
             this.announcementEndTime = parameters.getAnnouncementEndTime();
 
-            if (settings.onAllDayAnnouncements) {
+            if (settings.getBoolParameter(SettingsKeys.ON_ALL_DAY_ANNOUNCEMENTS)) {
                 try {
                     List<String> announcementNames = FileUtils.getLinesFromFile(settings.getParameter(SettingsKeys.ALL_DAY_ANNOUNCEMENTS_FILE));
                     this.allDayAnnouncements = new ArrayList<>();

@@ -25,8 +25,8 @@ public class NewsAdBlocksInserter extends AbstractInserter {
 
     public NewsAdBlocksInserter(Settings settings) {
         super(settings);
-        if (!settings.onNewsAdBlock) {
-            String message = "NewsAdBlocksInserter cannot be used, when setting onNewsAdBlock is not true";
+        if (!settings.getBoolParameter(SettingsKeys.ON_NEWS_AD_BLOCK)) {
+            String message = "NewsAdBlocksInserter cannot be used, when setting " + SettingsKeys.ON_NEWS_AD_BLOCK.getKey() + " is not true";
             LOG.error(message);
             throw new IllegalStateException(message);
         }

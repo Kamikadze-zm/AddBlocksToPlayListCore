@@ -46,8 +46,8 @@ public class AdBlocksInserter extends AbstractInserter {
             throw new IllegalArgumentException("Constructor parameters cannot be null");
         }
 
-        if (!settings.onAdBlocks) {
-            String message = "AdBlocksInserter cannot be used, when setting onAdBlocks is not true";
+        if (!settings.getBoolParameter(SettingsKeys.ON_AD_BLOCKS)) {
+            String message = "AdBlocksInserter cannot be used, when setting " + SettingsKeys.ON_AD_BLOCKS.getKey() + " is not true";
             LOG.error(message);
             throw new IllegalStateException(message);
         }
@@ -56,7 +56,7 @@ public class AdBlocksInserter extends AbstractInserter {
 
         String trailersPath = settings.getParameter(SettingsKeys.TRAILERS_PATH);
         this.firstTrailers = new Trailers(trailersPath, "anons1_", params.getTrailersNumber());
-        if (settings.onSecondTrailer) {
+        if (settings.getBoolParameter(SettingsKeys.ON_SECOND_TRAILER)) {
             this.secondTrailers = new Trailers(trailersPath, "anons2_", params.getSecondTrailersNumber());
         }
 
@@ -73,7 +73,7 @@ public class AdBlocksInserter extends AbstractInserter {
                     + "На них расставлены строки и плашки после рекламных блоков.");
         }
 
-        if (settings.onPopUpAd) {
+        if (settings.getBoolParameter(SettingsKeys.ON_POP_UP_AD)) {
             this.popUpAd = new PopUpAd(settings, params.getCommerceCrawlLineDuration());
         }
     }
@@ -117,7 +117,7 @@ public class AdBlocksInserter extends AbstractInserter {
                 }
 
                 //проверка на коммерческую плашку после 15 минутных блоков
-                if (settings.onPopUpAd && !exclusion && block.getTime().getMinutes() == 15) {
+                if (settings.getBoolParameter(SettingsKeys.ON_POP_UP_AD) && !exclusion && block.getTime().getMinutes() == 15) {
                     needPopUpAd = true;
                     lastBlockTime = block.getTime();
                 } else {
@@ -151,7 +151,7 @@ public class AdBlocksInserter extends AbstractInserter {
     protected void addAdBlock(List<Command> outSchedule, AdBlock block) {
         outSchedule.add(new Comment("----------- " + block.getTime(), true));
         outSchedule.add(firstTrailers.getCurrentTrailer());
-        if (settings.onSecondTrailer) {
+        if (settings.getBoolParameter(SettingsKeys.ON_SECOND_TRAILER)) {
             outSchedule.add(secondTrailers.getCurrentTrailer());
         }
 
@@ -212,7 +212,7 @@ public class AdBlocksInserter extends AbstractInserter {
      * @return комментарий анонса-плашки или комментарий окончания рекламного блока (если плашки нет или для данного блока не нужна)
      */
     protected Command getEndBlockCommand(BlockTime blockTime, boolean exclusion) {
-        if (!settings.onAnnouncement || exclusion) {
+        if (!settings.getBoolParameter(SettingsKeys.ON_ANNOUNCEMENT) || exclusion) {
             return endBlockCommand.getEndBlockCommand();
         } else {
             return endBlockCommand.getEndBlockCommand(blockTime.getTimeInMinutes());
@@ -232,7 +232,7 @@ public class AdBlocksInserter extends AbstractInserter {
         if (!notFoundBlocks.isEmpty()) {
             notFoundBlocks.stream().forEach(e -> this.errors.add("НЕТ в Эфирном Листе Блока с временем - " + e.toString()));
         }
-        if (settings.onPopUpAd && !popUpAd.getPopUpAdErrors().isEmpty()) {
+        if (settings.getBoolParameter(SettingsKeys.ON_POP_UP_AD) && !popUpAd.getPopUpAdErrors().isEmpty()) {
             this.errors.addAll(popUpAd.getPopUpAdErrors());
         }
     }
@@ -242,7 +242,7 @@ public class AdBlocksInserter extends AbstractInserter {
      * Добавляет кол-во строк после рекламных блоков, если счетчик включен
      */
     protected void addAdditionalInfo() {
-        if (settings.onAdBlocksCrawlLineCounter) {
+        if (settings.getBoolParameter(SettingsKeys.ON_AD_BLOCKS_CRAWLLINE_COUNTER)) {
             this.additionalInfo.put(Settings.KEY_AD_BLOCKS_CRAWL_LINE_COUNTER, String.valueOf(adBlockCrawlLine.getAdBlocksCrawlLineCounter()));
         }
     }

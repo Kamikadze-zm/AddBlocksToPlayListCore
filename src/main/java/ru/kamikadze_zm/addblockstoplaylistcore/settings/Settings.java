@@ -22,20 +22,6 @@ public class Settings {
 
     private final Map<SettingsParameter, String> settings = new HashMap<>();
 
-    public final boolean onAdBlocks;
-    public final boolean onAdMarks;
-    public final boolean onAdBlockCrawlLine;
-    public final boolean onTobacco;
-    public final boolean onCrawlLine;
-    public final boolean onAnnouncement;
-    public final boolean onAnnouncerNow;
-    public final boolean onPopUpAd;
-    public final boolean onAllDayAnnouncements;
-    public final boolean onSecondTrailer;
-    public final boolean onAdBlocksCrawlLineCounter;
-    public final boolean onNewsAdBlock;
-    public final boolean onDifferentAdOpenersClosers;
-
     /**
      *
      * @param settingsFile файл настроек
@@ -51,6 +37,20 @@ public class Settings {
      * @throws SettingsException в случае отсутствующего параметра или пустого значения
      */
     public Settings(Properties properties) throws SettingsException {
+        boolean onAdBlocks;
+        boolean onTobacco;
+        boolean onCrawlLine;
+        boolean onAnnouncerNow;
+        boolean onSecondTrailer;
+        boolean onNewsAdBlock;
+        boolean onAdMarks = false;
+        boolean onAdBlockCrawlLine = false;
+        boolean onAnnouncement = false;
+        boolean onAllDayAnnouncements = false;
+        boolean onPopUpAd = false;
+        boolean onAdBlocksCrawlLineCounter = false;
+        boolean onDifferentAdOpenersClosers = false;
+
         onAdBlocks = getBoolProperty(properties, SettingsKeys.ON_AD_BLOCKS);
         if (onAdBlocks) {
             onAdMarks = getBoolProperty(properties, SettingsKeys.ON_AD_MARKS);
@@ -60,14 +60,6 @@ public class Settings {
             onPopUpAd = getBoolProperty(properties, SettingsKeys.ON_POP_UP_AD);
             onAdBlocksCrawlLineCounter = getBoolProperty(properties, SettingsKeys.ON_AD_BLOCKS_CRAWLLINE_COUNTER);
             onDifferentAdOpenersClosers = getBoolProperty(properties, SettingsKeys.ON_DIFFERENT_AD_OPENERS_CLOSERS);
-        } else {
-            onAdMarks = false;
-            onAdBlockCrawlLine = false;
-            onAnnouncement = false;
-            onAllDayAnnouncements = false;
-            onPopUpAd = false;
-            onAdBlocksCrawlLineCounter = false;
-            onDifferentAdOpenersClosers = false;
         }
 
         onAnnouncerNow = getBoolProperty(properties, SettingsKeys.ON_ANNOUNCER_NOW);
@@ -75,6 +67,20 @@ public class Settings {
         onSecondTrailer = getBoolProperty(properties, SettingsKeys.ON_SECOND_TRAILER);
         onTobacco = getBoolProperty(properties, SettingsKeys.ON_TOBACCO);
         onNewsAdBlock = getBoolProperty(properties, SettingsKeys.ON_NEWS_AD_BLOCK);
+
+        settings.put(SettingsKeys.ON_AD_BLOCKS, String.valueOf(onAdBlocks));
+        settings.put(SettingsKeys.ON_TOBACCO, String.valueOf(onTobacco));
+        settings.put(SettingsKeys.ON_CRAWL_LINE, String.valueOf(onCrawlLine));
+        settings.put(SettingsKeys.ON_ANNOUNCER_NOW, String.valueOf(onAnnouncerNow));
+        settings.put(SettingsKeys.ON_SECOND_TRAILER, String.valueOf(onSecondTrailer));
+        settings.put(SettingsKeys.ON_NEWS_AD_BLOCK, String.valueOf(onNewsAdBlock));
+        settings.put(SettingsKeys.ON_AD_MARKS, String.valueOf(onAdMarks));
+        settings.put(SettingsKeys.ON_AD_BLOCK_CRAWL_LINE, String.valueOf(onAdBlockCrawlLine));
+        settings.put(SettingsKeys.ON_ANNOUNCEMENT, String.valueOf(onAnnouncement));
+        settings.put(SettingsKeys.ON_ALL_DAY_ANNOUNCEMENTS, String.valueOf(onAllDayAnnouncements));
+        settings.put(SettingsKeys.ON_POP_UP_AD, String.valueOf(onPopUpAd));
+        settings.put(SettingsKeys.ON_AD_BLOCKS_CRAWLLINE_COUNTER, String.valueOf(onAdBlocksCrawlLineCounter));
+        settings.put(SettingsKeys.ON_DIFFERENT_AD_OPENERS_CLOSERS, String.valueOf(onDifferentAdOpenersClosers));
 
         settings.put(SettingsKeys.SCHEDULE_PATH, getProperty(properties, SettingsKeys.SCHEDULE_PATH));
         settings.put(SettingsKeys.SCHEDULE_DATE_FORMAT, getProperty(properties, SettingsKeys.SCHEDULE_DATE_FORMAT));
@@ -100,7 +106,7 @@ public class Settings {
         }
 
         if (onAdBlocks || onNewsAdBlock) {
-            loadDecorAdBlockSettings(properties);
+            loadDecorAdBlockSettings(properties, onDifferentAdOpenersClosers);
         }
 
         if (onAdBlockCrawlLine || onCrawlLine) {
@@ -119,6 +125,9 @@ public class Settings {
             settings.put(SettingsKeys.ANNOUNCER_NOW_NAME, getProperty(properties, SettingsKeys.ANNOUNCER_NOW_NAME));
             settings.put(SettingsKeys.ANNOUNCER_NOW_PATH, getProperty(properties, SettingsKeys.ANNOUNCER_NOW_PATH));
         }
+    }
+
+    protected Settings() {
     }
 
     /**
@@ -159,7 +168,7 @@ public class Settings {
         settings.put(SettingsKeys.NEWS_AD_BLOCK_CLOSER, getProperty(p, SettingsKeys.NEWS_AD_BLOCK_CLOSER));
     }
 
-    private void loadDecorAdBlockSettings(Properties p) throws SettingsException {
+    private void loadDecorAdBlockSettings(Properties p, boolean onDifferentAdOpenersClosers) throws SettingsException {
         settings.put(SettingsKeys.AD_OPENER_OTHER_BLOCK, getProperty(p, SettingsKeys.AD_OPENER_OTHER_BLOCK));
         settings.put(SettingsKeys.AD_CLOSER_OTHER_BLOCK, getProperty(p, SettingsKeys.AD_CLOSER_OTHER_BLOCK));
         if (onDifferentAdOpenersClosers) {

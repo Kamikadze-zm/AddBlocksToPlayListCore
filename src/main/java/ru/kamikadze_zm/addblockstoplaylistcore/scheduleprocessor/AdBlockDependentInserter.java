@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import ru.kamikadze_zm.addblockstoplaylistcore.Parameters;
 import ru.kamikadze_zm.addblockstoplaylistcore.scheduleprocessor.adblocks.EndBlockCommand;
 import ru.kamikadze_zm.addblockstoplaylistcore.settings.Settings;
+import ru.kamikadze_zm.addblockstoplaylistcore.settings.Settings.SettingsKeys;
 import ru.kamikadze_zm.onair.command.Command;
 
 public abstract class AdBlockDependentInserter extends AbstractInserter {
@@ -40,7 +41,7 @@ public abstract class AdBlockDependentInserter extends AbstractInserter {
             schedule.add(command);
             return;
         }
-        if (settings.onAdBlocks) {
+        if (settings.getBoolParameter(SettingsKeys.ON_AD_BLOCKS)) {
             i = endBlockCommand.getEndBlockIndex(schedule, schedule.size() - 1);
         }
 

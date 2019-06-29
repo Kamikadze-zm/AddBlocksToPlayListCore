@@ -52,7 +52,7 @@ public class AdBlockDecor {
         this.clockOn = new TitleObjOn(clockName, logoDuration, logoFade);
         this.clockOff = new TitleObjOff(clockName, logoDuration, logoFade);
 
-        this.onDifferentAdOpenersClosers = settings.onDifferentAdOpenersClosers;
+        this.onDifferentAdOpenersClosers = settings.getBoolParameter(SettingsKeys.ON_DIFFERENT_AD_OPENERS_CLOSERS);
         Duration adOpenerCloserDuration = new Duration(0, 0, 4, 0);
         if (this.onDifferentAdOpenersClosers) {
             this.adOpener15block = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_OPENER_15BLOCK));
@@ -68,7 +68,7 @@ public class AdBlockDecor {
         this.adOpenerOtherBlock = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_OPENER_OTHER_BLOCK));
         this.adCloserOtherBlock = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.AD_CLOSER_OTHER_BLOCK));
 
-        this.onAdMarks = settings.onAdMarks;
+        this.onAdMarks = settings.getBoolParameter(SettingsKeys.ON_AD_MARKS);
         if (this.onAdMarks) {
             String markName = settings.getParameter(SettingsKeys.AD_MARK_NAME);
             this.adStartMark = new MarkStart(markName, "Начало рекламного блока");
@@ -78,7 +78,7 @@ public class AdBlockDecor {
             this.adEndMark = null;
         }
 
-        this.onNewsAdBlock = settings.onNewsAdBlock;
+        this.onNewsAdBlock = settings.getBoolParameter(SettingsKeys.ON_NEWS_AD_BLOCK);
         if (this.onNewsAdBlock) {
             this.newsAdBlockOpener = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.NEWS_AD_BLOCK_OPENER));
             this.newsAdBlockCloser = new Movie(null, adOpenerCloserDuration, null, settings.getParameter(SettingsKeys.NEWS_AD_BLOCK_CLOSER));

@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.kamikadze_zm.addblockstoplaylistcore.Parameters;
+import ru.kamikadze_zm.addblockstoplaylistcore.scheduleprocessor.adblocks.EndBlockCommand;
 import ru.kamikadze_zm.addblockstoplaylistcore.settings.Settings;
 import ru.kamikadze_zm.addblockstoplaylistcore.settings.Settings.SettingsKeys;
 import ru.kamikadze_zm.onair.command.Command;
@@ -21,6 +22,7 @@ public class CrawlLineInserter extends AdBlockDependentInserter {
     private static final Logger LOG = LogManager.getLogger(CrawlLineInserter.class);
 
     private final TitleObjLoad otherCrawlLine;
+    private final int numberSkippingParts;
 
     private Exclusions crawlLineExclusions;
     private Exclusions fullExclusions;
@@ -50,7 +52,7 @@ public class CrawlLineInserter extends AdBlockDependentInserter {
         this.otherCrawlLine = new TitleObjLoad(clObjectName, clDuration, null,
                 settings.getParameter(SettingsKeys.CRAWL_LINE_OTHER_PATH).replace("<>", df.format(scheduleDate)));
 
-        //искоючения для строки
+        //исключения для строки
         try {
             crawlLineExclusions = new Exclusions(settings.getParameter(SettingsKeys.CRAWL_LINE_EXCLUSIONS));
         } catch (IOException e) {
@@ -63,6 +65,40 @@ public class CrawlLineInserter extends AdBlockDependentInserter {
             this.errors.add("Не удалось прочитать файл исключений для детских и местных программ. "
                     + "Если они разрезаны на части на них расставлена прочая строка.");
         }
+
+        this.numberSkippingParts = Integer.parseInt(settings.getParameter(SettingsKeys.CRAWL_LINE_OTHER_NUMBER_SKIPPING_PARTS));
+    }
+
+    CrawlLineInserter(
+            Date scheduleDate,
+            EndBlockCommand endBlockCommand,
+            String clObjectName,
+            ParallelDuration clDuration,
+            String clPath,
+            String dateFormat,
+            Exclusions crawlLineExclusions,
+            Exclusions fullExclusions,
+            int numberSkippingParts) {
+        super(endBlockCommand);
+        if (scheduleDate == null
+                || endBlockCommand == null
+                || clObjectName == null
+                || clDuration == null
+                || clPath == null
+                || dateFormat == null
+                || crawlLineExclusions == null
+                || fullExclusions == null) {
+            throw new IllegalArgumentException("Constructor parameters cannot be null");
+        }
+        if (clObjectName.isEmpty() || clPath.isEmpty() || dateFormat.isEmpty()) {
+            throw new IllegalArgumentException("clObjectName and dateFormat and clPath cannot be empty");
+        }
+
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+        this.otherCrawlLine = new TitleObjLoad(clObjectName, clDuration, null, clPath.replace("<>", df.format(scheduleDate)));
+        this.crawlLineExclusions = crawlLineExclusions;
+        this.fullExclusions = fullExclusions;
+        this.numberSkippingParts = numberSkippingParts;
     }
 
     @Override
@@ -81,7 +117,8 @@ public class CrawlLineInserter extends AdBlockDependentInserter {
 
                 if ((fullExclusions != null && fullExclusions.isExclusionByContains(m.getFileName()))
                         || (crawlLineExclusions != null && crawlLineExclusions.isExclusionByStartsWith(m.getFileName()))) {
-                    skipped = 0;
+                    //после исключения ставим через одну часть
+                    skipped = numberSkippingParts - 1;
                     outSchedule.add(c);
                     continue;
                 }
@@ -89,9 +126,9 @@ public class CrawlLineInserter extends AdBlockDependentInserter {
                 //начало видео
                 if (!lastMovieFileName.equals(m.getFileName())) {
                     lastMovieFileName = m.getFileName();
-                    //ставим после этого
-                    skipped = 1;
-                } else if (skipped == 1) {// ставим через одну часть
+                    //всегда ставим после первого куска
+                    skipped = numberSkippingParts;
+                } else if (skipped >= numberSkippingParts) {// пропущено достаточно частей
                     checkEndAdBlockAndAddCommand(outSchedule, otherCrawlLine);
                     skipped = 0;
                 } else {

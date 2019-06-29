@@ -13,7 +13,6 @@ public abstract class AdBlockDependentInserter extends AbstractInserter {
 
     private static final Logger LOG = LogManager.getLogger(AdBlockDependentInserter.class);
 
-    protected final Parameters parameters;
     protected final EndBlockCommand endBlockCommand;
 
     public AdBlockDependentInserter(Settings settings, Parameters parameters) {
@@ -24,8 +23,23 @@ public abstract class AdBlockDependentInserter extends AbstractInserter {
             LOG.error(message);
             throw new IllegalArgumentException(message);
         }
-        this.parameters = parameters;
         this.endBlockCommand = SharedObjects.getEndBlockCommand(settings, parameters);
+    }
+
+    /**
+     * Создает AdBlockDependentInserter с пустыми настройками
+     *
+     * @param endBlockCommand команда окончания рекламного блока
+     */
+    protected AdBlockDependentInserter(EndBlockCommand endBlockCommand) {
+        super();
+
+        if (endBlockCommand == null) {
+            String message = "EndBlockCommand cannot be null";
+            LOG.error(message);
+            throw new IllegalArgumentException(message);
+        }
+        this.endBlockCommand = endBlockCommand;
     }
 
     /**

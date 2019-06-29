@@ -127,6 +127,9 @@ public class Settings {
         }
     }
 
+    /**
+     * Создает пустые настройки
+     */
     protected Settings() {
     }
 
@@ -151,6 +154,9 @@ public class Settings {
     }
 
     protected void putParameter(SettingsParameter key, String value) {
+        if (key == null) {
+            return;
+        }
         settings.put(key, value);
     }
 
@@ -189,6 +195,17 @@ public class Settings {
         settings.put(SettingsKeys.CRAWL_LINE_OTHER_PATH, getProperty(p, SettingsKeys.CRAWL_LINE_OTHER_PATH));
         settings.put(SettingsKeys.CRAWL_LINE_DATE_FORMAT, getProperty(p, SettingsKeys.CRAWL_LINE_DATE_FORMAT));
         settings.put(SettingsKeys.CRAWL_LINE_EXCLUSIONS, getProperty(p, SettingsKeys.CRAWL_LINE_EXCLUSIONS));
+        int numberSkippingParts;
+        try {
+            String skippingPartsProp = getProperty(p, SettingsKeys.CRAWL_LINE_OTHER_NUMBER_SKIPPING_PARTS);
+            numberSkippingParts = Integer.parseInt(skippingPartsProp);
+            if (numberSkippingParts < 0 || numberSkippingParts > 2) {
+                numberSkippingParts = 1;
+            }
+        } catch (SettingsException | NumberFormatException e) {
+            numberSkippingParts = 1;
+        }
+        settings.put(SettingsKeys.CRAWL_LINE_OTHER_NUMBER_SKIPPING_PARTS, String.valueOf(numberSkippingParts));
     }
 
     private void loadTobaccoSettings(Properties p) throws SettingsException {
@@ -376,6 +393,10 @@ public class Settings {
          * Формат даты для вставки в бегущую строку
          */
         CRAWL_LINE_DATE_FORMAT("crawl-line-date-format"),
+        /**
+         * Кол-во пропускаемых частей фильма между прочей бегущей строкой. Поддерживаемые значения: 0, 1, 2 (по умолчанию - 1)
+         */
+        CRAWL_LINE_OTHER_NUMBER_SKIPPING_PARTS("crawl-line-other-number-skipping-parts"),
         /**
          * Метка комментария анонса-плашки
          */

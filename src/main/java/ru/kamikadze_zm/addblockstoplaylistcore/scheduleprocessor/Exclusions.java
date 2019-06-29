@@ -1,6 +1,7 @@
 package ru.kamikadze_zm.addblockstoplaylistcore.scheduleprocessor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import ru.kamikadze_zm.addblockstoplaylistcore.util.FileUtils;
 
@@ -8,8 +9,19 @@ public class Exclusions {
 
     private final List<String> exclusions;
 
+    /**
+     * Пустой список исключений
+     */
+    public Exclusions() {
+        this.exclusions = new ArrayList<>();
+    }
+
     public Exclusions(String file) throws IOException {
         this.exclusions = FileUtils.getLinesFromFile(file);
+    }
+
+    public void add(String exclusion) {
+        this.exclusions.add(exclusion);
     }
 
     /**

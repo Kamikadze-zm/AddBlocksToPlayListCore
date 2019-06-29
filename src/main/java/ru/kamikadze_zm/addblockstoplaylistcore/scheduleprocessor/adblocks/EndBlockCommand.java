@@ -30,17 +30,36 @@ public class EndBlockCommand {
     private final Comment endBlockCommand;
 
     public EndBlockCommand(Settings settings, Parameters parameters) {
-        if (settings.getBoolParameter(SettingsKeys.ON_ANNOUNCEMENT) && !parameters.getAnnouncementName().isEmpty()) {
+        this(settings.getBoolParameter(SettingsKeys.ON_ANNOUNCEMENT),
+                settings.getParameter(SettingsKeys.ANNOUNCEMENT_MARK),
+                parameters.getAnnouncementName(),
+                parameters.getAnnouncementStartTime(),
+                parameters.getAnnouncementEndTime(),
+                settings.getBoolParameter(SettingsKeys.ON_ALL_DAY_ANNOUNCEMENTS),
+                settings.getParameter(SettingsKeys.ALL_DAY_ANNOUNCEMENTS_FILE)
+        );
+    }
 
-            this.announcementMark = settings.getParameter(SettingsKeys.ANNOUNCEMENT_MARK);
+    public EndBlockCommand(
+            boolean onAnnouncement,
+            String announcementMark,
+            String announcementName,
+            int announcementStartTime,
+            int announcementEndTime,
+            boolean onAllDayAnnouncements,
+            String onAllDayAnnouncementsFile) {
 
-            this.announcement = new Comment(announcementMark + " " + parameters.getAnnouncementName(), true);
-            this.announcementStartTime = parameters.getAnnouncementStartTime();
-            this.announcementEndTime = parameters.getAnnouncementEndTime();
+        if (onAnnouncement && !announcementName.isEmpty()) {
 
-            if (settings.getBoolParameter(SettingsKeys.ON_ALL_DAY_ANNOUNCEMENTS)) {
+            this.announcementMark = announcementMark;
+
+            this.announcement = new Comment(announcementMark + " " + announcementName, true);
+            this.announcementStartTime = announcementStartTime;
+            this.announcementEndTime = announcementEndTime;
+
+            if (onAllDayAnnouncements) {
                 try {
-                    List<String> announcementNames = FileUtils.getLinesFromFile(settings.getParameter(SettingsKeys.ALL_DAY_ANNOUNCEMENTS_FILE));
+                    List<String> announcementNames = FileUtils.getLinesFromFile(onAllDayAnnouncementsFile);
                     this.allDayAnnouncements = new ArrayList<>();
                     announcementNames.stream().forEach(name -> this.allDayAnnouncements
                             .add(new Comment(announcementMark + " " + name, true)));
@@ -50,6 +69,10 @@ public class EndBlockCommand {
             }
         }
         //комментарий окончания рекламного блока, где отсутствует анонс-плашка
+        this.endBlockCommand = new Comment(Settings.END_BLOCK_COMMENT, true);
+    }
+
+    public EndBlockCommand() {
         this.endBlockCommand = new Comment(Settings.END_BLOCK_COMMENT, true);
     }
 

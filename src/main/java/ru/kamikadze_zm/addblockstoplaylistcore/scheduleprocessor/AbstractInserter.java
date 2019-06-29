@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.kamikadze_zm.addblockstoplaylistcore.settings.EmptySettings;
 import ru.kamikadze_zm.addblockstoplaylistcore.settings.Settings;
 
 public abstract class AbstractInserter implements ScheduleProcessor {
@@ -23,6 +24,13 @@ public abstract class AbstractInserter implements ScheduleProcessor {
             throw new IllegalArgumentException(message);
         }
         this.settings = settings;
+    }
+
+    /**
+     * Настройкам присваивается {@link EmptySettings}
+     */
+    protected AbstractInserter() {
+        this.settings = new EmptySettings();
     }
 
     @Override

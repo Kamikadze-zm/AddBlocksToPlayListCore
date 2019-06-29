@@ -36,6 +36,10 @@ public abstract class AdBlockDependentInserter extends AbstractInserter {
      */
     protected void checkEndAdBlockAndAddCommand(List<Command> schedule, Command command) {
         int i = -1;
+        if (schedule.isEmpty() || schedule.size() - 1 < 0) {
+            schedule.add(command);
+            return;
+        }
         if (settings.onAdBlocks) {
             i = endBlockCommand.getEndBlockIndex(schedule, schedule.size() - 1);
         }

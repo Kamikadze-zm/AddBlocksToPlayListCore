@@ -139,6 +139,21 @@ public class AdBlockDependentInserterTest {
 
     }
 
+    @Test
+    public void testCheckEndAdBlockAndAddCommandWithEmptySchedule() {
+        Command movie = new Movie(null, new Duration(0, 10, 0, 0), null, "movie");
+        Command tobacco = new TitleObjLoad("tobacco", new ParallelDuration(0, 0, 5, 0), null, "path");
+
+        List<Command> scheduleWithoutEndBlockCommand = new ArrayList<>();
+        adBlockDependentInserter.checkEndAdBlockAndAddCommand(scheduleWithoutEndBlockCommand, tobacco);
+        scheduleWithoutEndBlockCommand.add(movie);
+
+        List<Command> expectedScheduleWithoutEndBlockCommand = new ArrayList<>();
+        expectedScheduleWithoutEndBlockCommand.add(tobacco);
+        expectedScheduleWithoutEndBlockCommand.add(movie);
+        compare(expectedScheduleWithoutEndBlockCommand, scheduleWithoutEndBlockCommand);
+    }
+
     private void compare(List<Command> expectedSchedule, List<Command> actualSchedule) {
         assertEquals(expectedSchedule.size(), actualSchedule.size());
         for (int i = 0; i < expectedSchedule.size(); i++) {
